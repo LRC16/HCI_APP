@@ -8,6 +8,7 @@ class DailySchedulePage extends StatefulWidget {
   final DateTime selectedDate;
 
   DailySchedulePage({required this.selectedDate});
+  
 
   @override
   _DailySchedulePageState createState() => _DailySchedulePageState();
@@ -106,6 +107,13 @@ class _DailySchedulePageState extends State<DailySchedulePage> {
     "title": "Sleep",
     "type": "other",
     "score": 0  // other type
+  },
+  {
+    "time": "20:00 - 21:15",
+    "user": "both",
+    "title": "Video Call",
+    "type": "other",
+    "score": -8  // other type
   },
       ];
     }
@@ -319,11 +327,23 @@ class _DailySchedulePageState extends State<DailySchedulePage> {
 
     return Scaffold(
   appBar: AppBar(
-    
+    actions: [
+    IconButton(
+      icon: Icon(Icons.today),
+      onPressed: () {
+        // Action when pressed
+        Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => DailySchedulePage(selectedDate: DateTime.now()),
+        ),
+      );
+      },
+    ),],
+  
     title: GestureDetector(
     onTap: () async{  DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: today,
       firstDate: DateTime(2000),
       lastDate: DateTime(2100),
     );
@@ -409,6 +429,7 @@ class _DailySchedulePageState extends State<DailySchedulePage> {
                 DateTime startOfWeek = widget.selectedDate.subtract(Duration(days: widget.selectedDate.weekday - 1));
                 DateTime day = startOfWeek.add(Duration(days: index));
                 bool isSelected = day.day == widget.selectedDate.day;
+                bool isToday = day.day == DateTime.now().day;
 
                 return GestureDetector(
                   onTap: () {
@@ -458,7 +479,7 @@ class _DailySchedulePageState extends State<DailySchedulePage> {
                           color: isSelected ? Colors.blue : Colors.black,
                         ),
                       ),
-                      if (isSelected)
+                      if (isToday)
                         Container(
                           margin: EdgeInsets.only(top: 4),
                           width: 8,
@@ -529,7 +550,7 @@ class _DailySchedulePageState extends State<DailySchedulePage> {
   floatingActionButton: FloatingActionButton(
  onPressed: () async{  DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: today,
       firstDate: DateTime(2000),
       lastDate: DateTime(2100),
     );
@@ -542,7 +563,7 @@ class _DailySchedulePageState extends State<DailySchedulePage> {
     };
   },
  child: Icon(Icons.calendar_today),
- backgroundColor: Colors.blue,
+ backgroundColor: Colors.blue[100]!,
 ),
 
 );
@@ -652,7 +673,7 @@ class _DailySchedulePageState extends State<DailySchedulePage> {
             child: Text(
               title,
               style: TextStyle(
-                fontSize: 20,
+                fontSize: 16,
                 color: Colors.grey.shade900,
                 fontWeight: FontWeight.w800,
               ),
@@ -755,7 +776,7 @@ class _DailySchedulePageState extends State<DailySchedulePage> {
             child: Text(
               title,
               style: TextStyle(
-                fontSize: 20,
+                fontSize: 16,
                 color: Colors.grey.shade900,
                 fontWeight: FontWeight.w800,
               ),

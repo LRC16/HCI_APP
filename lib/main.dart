@@ -27,23 +27,26 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 1;
-
-  final List<Widget> _pages = [
-    HomePage(),
-    DailySchedulePage(selectedDate: DateTime.now(),),
-    MentalLoadIndicator(),
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
+  DateTime currentDate = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[_selectedIndex],
+      body: IndexedStack(  // Use IndexedStack instead of a List
+        index: _selectedIndex,
+        children: [
+          HomePage(),
+          Navigator(  // Wrap only DailySchedulePage in a Navigator
+            onGenerateRoute: (settings) {
+              return MaterialPageRoute(
+                builder: (context) => DailySchedulePage(selectedDate: currentDate),
+                maintainState: true,
+              );
+            },
+          ),
+          MentalLoadIndicator(),
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
@@ -55,7 +58,16 @@ class _MainScreenState extends State<MainScreen> {
       ),
     );
   }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 }
 
+ 
 
+
+// Calendar Page with Calendar Grid and Daily Schedule Navigation
 
